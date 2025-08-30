@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:recipes/core/services/db_service.dart';
+import 'package:recipes/features/auth/auth_repository.dart';
 import 'package:recipes/features/categories/data/datasource/local/categories_database.dart';
 import 'package:recipes/features/categories/data/datasource/local/categories_database_impl.dart';
 import 'package:recipes/features/categories/data/repository/categories_repository_impl.dart';
@@ -19,6 +20,7 @@ import 'package:recipes/features/theme/data/repository/theme_repository_impl.dar
 import 'package:recipes/features/theme/domain/repository/theme_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/auth/auth_repository_dev.dart';
 import '../../features/theme/domain/usecase/get_theme_use_case.dart';
 import '../../features/theme/domain/usecase/save_theme_use_case.dart';
 import '../../features/theme/presentation/bloc/theme_bloc.dart';
@@ -26,6 +28,8 @@ import '../../features/theme/presentation/bloc/theme_bloc.dart';
 var getIt = GetIt.instance;
 
 Future<void> init() async {
+  getIt.registerSingleton<AuthRepository>(AuthRepositoryDev());
+
   getIt.registerSingleton(await DbService().database);
   getIt.registerSingleton<RecipesDatabase>(
     RecipesDatabaseImpl(database: getIt()),

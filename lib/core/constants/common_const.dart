@@ -1,0 +1,1 @@
+enum ScreenTabs { home, favorite, cookIt, shoppingList }
