@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
+import 'package:recipes/core/routing/router.dart';
 import 'package:recipes/core/theme/app_theme.dart';
 import 'package:recipes/features/categories/presentation/bloc/categories_bloc.dart';
 import 'package:recipes/features/categories/presentation/bloc/categories_events.dart';
@@ -46,7 +48,7 @@ void main() async {
             theme: AppTheme.getTheme(
               state.themeEntity?.themeType == ThemeType.dark,
             ),
-            home: HomeScreen(),
+            home: MyApp(),
           );
         },
       ),
@@ -54,110 +56,27 @@ void main() async {
   );
 }
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
-  final _log = Logger();
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    _router = router(getIt());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<EntitiesBloc>().add(GetMixedEntitiesEvent(categoryId: 0));
-      _log.i("addPostFrameCallback");
-    });
-
-    void onCategoryTapHandler(int categoryId) {
-      _log.i("catId: $categoryId");
-      context.read<EntitiesBloc>().add(GetMixedEntitiesEvent(categoryId: categoryId));
-    }
-
-    return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("My Recipes"),
-            actions: [
-              IconButton(
-                onPressed: () =>
-                    context.read<ThemeBloc>().add(ToggleThemeEvent()),
-                icon: Icon(
-                  state.themeEntity?.themeType == ThemeType.dark
-                      ? Icons.light_mode
-                      : Icons.dark_mode,
-                ),
-              ),
-            ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              context.read<ThemeBloc>().add(ToggleThemeEvent());
-            },
-            child: Icon(Icons.add),
-          ),
-          body: Center(
-            child: Column(
-              children: [
-                Expanded(
-                  child: BlocBuilder<EntitiesBloc, EntitiesState>(
-                    builder: (context, state) {
-                      final isSuccess = state.status == EntitiesStatus.success;
-                      if (!isSuccess) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      final items = state.mixedEntities;
-                      return ListView.builder(
-                        itemCount: items.length,
-                        itemBuilder: (_, index) => items[index] is Category
-                            ? CategoryItem(
-                                category: items[index] as Category,
-                                onTapHandler: onCategoryTapHandler,
-                              )
-                            : RecipeItem(recipe: items[index] as Recipe),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    return MaterialApp.router(
+      routerConfig: _router,
     );
   }
 }
 
-class CategoryItem extends StatelessWidget {
-  final Category category;
-  final Function(int index) onTapHandler;
-
-  const CategoryItem({
-    super.key,
-    required this.category,
-    required this.onTapHandler,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.folder),
-      title: Text("id:${category.id}: ${category.title}"),
-      onTap: () => onTapHandler(category.id!),
-    );
-  }
-}
-
-class RecipeItem extends StatelessWidget {
-  final Recipe recipe;
-
-  const RecipeItem({super.key, required this.recipe});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.receipt_rounded),
-      title: Text(recipe.title),
-    );
-  }
-}
