@@ -47,12 +47,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              context.read<ThemeBloc>().add(ToggleThemeEvent());
-            },
-            child: Icon(Icons.add),
-          ),
           body: Center(
             child: Column(
               children: [
