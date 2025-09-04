@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:recipes/core/routing/routes.dart';
+import 'package:recipes/features/bottom_menu/bottom_menu.dart';
+import 'package:recipes/features/cook_it/cook_it_screen.dart';
 import 'package:recipes/features/favorites/favorites_screen.dart';
 import 'package:recipes/features/home/home_screen.dart';
-import 'package:recipes/features/main_tabs/main_tabs_screen.dart';
+import 'package:recipes/features/shopping_list/shopping_list_screen.dart';
 
 import '../../features/auth/auth_repository.dart';
 import '../../features/recipe/recipe_screen.dart';
@@ -22,16 +24,24 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
     /// MAIN TABS ("/")
     GoRoute(
       path: Routes.home,
-      builder: (_, __) => const MainTabsScreen(),
+      builder: (_, __) => BottomMenu(),//const MainTabsScreen(),
       routes: [
-        GoRoute(
-          path: Routes.home,
-          builder: (_, __) => HomeScreen(),
-        ),
-        GoRoute(
-          path: Routes.favorites,
-          builder: (_, __) => FavoritesScreen(),
-        ),
+        // GoRoute(
+        //   path: Routes.home,
+        //   builder: (_, __) => HomeScreen(),
+        // ),
+        // GoRoute(
+        //   path: Routes.favorites,
+        //   builder: (_, __) => FavoritesScreen(),
+        // ),
+        // GoRoute(
+        //   path: Routes.cookIt,
+        //   builder: (_, __) => CookItScreen(),
+        // ),
+        // GoRoute(
+        //   path: Routes.shoppingList,
+        //   builder: (_, __) => ShoppingListScreen(),
+        // ),
         GoRoute(
           path: Routes.recipe,
           builder:(context, state) {

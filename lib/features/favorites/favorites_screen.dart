@@ -5,6 +5,11 @@ class FavoritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("FavoritesScreen"),
+      ),
+      body: const Center(child: Text("FavoritesScreen"),),
+    );
   }
 }
